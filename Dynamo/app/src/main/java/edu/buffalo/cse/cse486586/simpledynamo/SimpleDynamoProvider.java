@@ -65,8 +65,6 @@ public class SimpleDynamoProvider extends ContentProvider {
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
 
-        //findHashes();
-
         String filename = selection;
         if (filename.equals("*")) {
             String[] files = getContext().fileList();
@@ -144,8 +142,6 @@ public class SimpleDynamoProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues values) {
 
-        //findHashes();
-
         String filename = (String) values.get(KEY_FIELD);
         String value = (String) values.get(VALUE_FIELD);
         Log.i("In insert", values.size() + "--" + filename);
@@ -166,19 +162,13 @@ public class SimpleDynamoProvider extends ContentProvider {
             } catch (Exception e) {
                 Log.e(TAG, "File write failed" + e);
             }
-
-/*            if (values.containsKey(REDIRECT_FIELD)) {
-                new ClientTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, filename, value, "IR2", mysuccport1);
-                new ClientTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, filename, value, "IR2", mysuccport2);
-            }*/
         } else {
             for (int i = 0; i < porthashes.size(); i++) {
-                //Log.i("InsertLoop", i + "");
+              
                 if (keyHash.compareTo(porthashes.get(i)) < 0) {
-                    //Log.i("Matchinghash", "" + porthashes.get(i));
+                   
                     if (porthashes.get(i).equals(myHash)) {
-                        //Internal Storage
-                        //Log.i("IS", "Internal Storage" + "--" + myHash);
+         
                         Log.i("IOS", myHash);
                         FileOutputStream outputStream;
                         try {
@@ -189,21 +179,16 @@ public class SimpleDynamoProvider extends ContentProvider {
                             Log.e(TAG, "File write failed" + e);
                         }
                         Log.i("Ports", mysuccport1 + "--" + mysuccport2);
-                        //new ClientTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, filename, value, "FS1", mysuccport1, mysuccport2);
-                        //new ClientTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, filename, value, "IR2", mysuccport1);
-                        //new ClientTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, filename, value, "IR2", mysuccport2);
+                
                         new ClientTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, filename, value, "IRLM", mysuccport1, mysuccport2);
                         Log.i("FSEND", "FEND");
                         break;
                     } else {
-                        //Log.i("OS", "Outside Storage");
-                        //Log.i("OS", portHashmap.get(porthashes.get(i)));
+           
                         Log.i("IRD", porthashes.get(i));
                         String cosuccport1 = i == porthashes.size() - 1 ? portHashmap.get(porthashes.get(0)) : portHashmap.get(porthashes.get(i + 1));
                         String cosuccport2 = i == porthashes.size() - 1 ? portHashmap.get(porthashes.get(1)) : i == porthashes.size() - 2 ? portHashmap.get(porthashes.get(0)) : portHashmap.get(porthashes.get(i + 2));
-                        //new ClientTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, filename, value, "IR2", portHashmap.get(porthashes.get(i)));
-                        //new ClientTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, filename, value, "IR2", cosuccport1);
-                        //new ClientTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, filename, value, "IR2", cosuccport2);
+               
                         new ClientTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, filename, value, "IRLO", portHashmap.get(porthashes.get(i)), cosuccport1, cosuccport2);
                         Log.i("IREND", "IEND");
                         break;
@@ -212,11 +197,9 @@ public class SimpleDynamoProvider extends ContentProvider {
             }
 
             if (keyHash.compareTo(porthashes.get(porthashes.size() - 1)) > 0) {
-                //Log.i("EdgeCaseInsert", keyHash);
+        
                 Log.i("IRDEC", porthashes.get(0));
-                //new ClientTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, filename, value, "IR2", portHashmap.get(porthashes.get(0)));
-                //new ClientTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, filename, value, "IR2", portHashmap.get(porthashes.get(1)));
-                //new ClientTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, filename, value, "IR2", portHashmap.get(porthashes.get(2)));
+               
                 new ClientTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, filename, value, "IRLO", portHashmap.get(porthashes.get(0)), portHashmap.get(porthashes.get(1)), portHashmap.get(porthashes.get(2)));
                 Log.i("IRDECEND", "IDECEND");
             }
@@ -245,25 +228,10 @@ public class SimpleDynamoProvider extends ContentProvider {
 
         Map<String, String> datamap = new HashMap<String, String>();
         Log.i("Porthashessize", porthashes.size() + "");
-      /*  for (int i = 0; i < porthashes.size(); i++) {
-            if (porthashes.get(i).equals(myHash)) continue;
-            if (porthashes.get(i).equals(predhash1) || porthashes.get(i).equals(predhash2)) {
-                Log.i("Call id", i + "--" + portHashmap.get(porthashes.get(i)));
-                new ClientTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, "OCTP", portHashmap.get(porthashes.get(i)));
-            } else if (porthashes.get(i).equals(succhash)) {
-                Log.i("Call id", i + "--" + portHashmap.get(porthashes.get(i)));
-                new ClientTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, "OCTS", portHashmap.get(porthashes.get(i)), myHash, predhash1);
-            }
-            Log.i("I value", i + "");
-        }*/
 
-       /* for (int i = 0; i < porthashes.size(); i++) {
-            if (porthashes.get(i).equals(myHash)) continue;
-            Log.i("Restore id on", i + "--" + portHashmap.get(porthashes.get(i)));*/
         Log.i(TAG,"Invocation of OCRL");
         new ClientTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, "OCRL");
-   /*         Log.i("I value", i + "");
-        }*/
+
         Log.i("EOC", "End of On Create");
         return false;
     }
@@ -271,18 +239,10 @@ public class SimpleDynamoProvider extends ContentProvider {
     public void findHashes() {
 
         porthashes = new ArrayList<String>();
-        /*porthashes.add("177ccecaec32c54b82d5aaafc18a2dadb753e3b1");
-        porthashes.add("208f7f72b198dadd244e61801abe1ec3a4857bc9");
-        porthashes.add("33d6357cfaaf0f72991b0ecd8c56da066613c089");
-        porthashes.add("abf0fd8db03e5ecb199a9b82929e9db79b909643");
-        porthashes.add("c25ddd596aa7c81fa12378fa725f706d54325d12");*/
+
 
         portHashmap = new HashMap<String, String>();
-      /*  portHashmap.put(porthashes.get(0),"11108");
-        portHashmap.put(porthashes.get(1),"11112");
-        portHashmap.put(porthashes.get(2),"11116");
-        portHashmap.put(porthashes.get(3),"11120");
-        portHashmap.put(porthashes.get(4),"11124");*/
+
 
         Log.i("FindHashes size", porthashes.size() + "");
         for (int i = 0; i < portArr.length; i++) {
@@ -312,10 +272,7 @@ public class SimpleDynamoProvider extends ContentProvider {
                 mysuccport2 = i == porthashes.size() - 1 ? portHashmap.get(porthashes.get(1)) : i == porthashes.size() - 2 ? portHashmap.get(porthashes.get(0)) : portHashmap.get(porthashes.get(i + 2));
                 mypredport1 = i == 0 ? portHashmap.get(porthashes.get(porthashes.size() - 1)) : portHashmap.get(porthashes.get(i - 1));
                 mypredport2 = i == 0 ? portHashmap.get(porthashes.get(porthashes.size() - 2)) : i == 1 ? portHashmap.get(porthashes.get(porthashes.size() - 1)) : portHashmap.get(porthashes.get(i - 2));
-                Log.i("Succport1", mysuccport1);
-                Log.i("Succport2", mysuccport2);
-                Log.i("Predport1", mypredport1);
-                Log.i("Predport2", mypredport2);
+
                 predhash1 = i == 0 ? porthashes.get(porthashes.size() - 1) : porthashes.get(i - 1);
                 predhash2 = i == 0 ? porthashes.get(porthashes.size() - 2) : i == 1 ? porthashes.get(porthashes.size() - 1) : porthashes.get(i - 2);
                 succhash = i == porthashes.size() - 1 ? porthashes.get(0) : porthashes.get(i + 1);
@@ -327,7 +284,7 @@ public class SimpleDynamoProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
-        //findHashes();
+  
         String filename = selection;
         FileInputStream inputStream;
         String result = "";
@@ -424,7 +381,7 @@ public class SimpleDynamoProvider extends ContentProvider {
             values[1] = result;
             MatrixCursor mc = new MatrixCursor(columns);
             mc.addRow(values);
-            //Log.v("query", selection);
+        
             return mc;
         } else {
             String hashKey = "";
@@ -439,16 +396,6 @@ public class SimpleDynamoProvider extends ContentProvider {
                     if (hashKey.compareTo(porthashes.get(i)) < 0) {
                         Log.i("Last replica on", porthashes.get(i) + "--" + portHashmap.get(porthashes.get(i)));
                         String value = "";
-                        //Last replica is in i+2
-                      /*  if (i == porthashes.size() - 1) {
-                            Log.i("Last replica is", porthashes.get(i) + "--" + portHashmap.get(porthashes.get(1)));
-                            value = new ClientTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, filename, "QR", portHashmap.get(porthashes.get(i))).get();
-                        } else if (i == porthashes.size() - 2) {
-                            Log.i("Last replica is", porthashes.get(i) + "--" + portHashmap.get(porthashes.get(0)));
-                            value = new ClientTask().executeOnExecutor(AsyncTask.SERIAL_EXECUTOR, filename, "QR", portHashmap.get(porthashes.get(i))).get();
-                        } else {*/
-
-                        //Log.i("Last replica is", porthashes.get(i) + "--" + portHashmap.get(porthashes.get(i + 2)));
                         String cosuccport1 = i == porthashes.size() - 1 ? portHashmap.get(porthashes.get(0)) : portHashmap.get(porthashes.get(i + 1));
                         String cosuccport2 = i == porthashes.size() - 1 ? portHashmap.get(porthashes.get(1)) : i == porthashes.size() - 2 ? portHashmap.get(porthashes.get(0)) : portHashmap.get(porthashes.get(i + 2));
 
@@ -483,7 +430,7 @@ public class SimpleDynamoProvider extends ContentProvider {
                     values[1] = value;
                     MatrixCursor mc = new MatrixCursor(columns);
                     mc.addRow(values);
-                    //Log.v("query", selection);
+              
                     return mc;
                 } catch (InterruptedException e) {
                     Log.i(TAG, "Interrupted Exception");
@@ -532,8 +479,7 @@ public class SimpleDynamoProvider extends ContentProvider {
                         String[] msgs = input.split(",");
                         if (msgs.length > 2 && msgs[2].equals("IR")) {
 
-                            Log.i("original-OutsideStorage", "Original-OutsideStorage-Server" + "--" + msgs[0]);
-                            //ContentResolver cr = getContext().getContentResolver();
+                            Log.i("original-OutsideStorage", "Original-OutsideStorage-Server" + "--" + msgs[0]);            
                             Uri uri = buildUri("content", "edu.buffalo.cse.cse486586.simpledynamo.provider");
                             ContentValues cv = new ContentValues();
                             cv.put(KEY_FIELD, msgs[0]);
@@ -546,12 +492,10 @@ public class SimpleDynamoProvider extends ContentProvider {
                             String dataToSend = ACK + "\n";
                             out.writeBytes(dataToSend);
                             out.flush();
-                            //publishProgress(msgs[0], msgs[1], msgs[2]);
                             Log.i("Ackendserver", "Ackendserver");
                         } else if (msgs.length > 2 && msgs[2].equals("IR1")) {
 
                             Log.i("R1-OutsideStorage", "R1-OutsideStorage-Server" + "---" + msgs[0]);
-                            //ContentResolver cr = getContext().getContentResolver();
                             Uri uri = buildUri("content", "edu.buffalo.cse.cse486586.simpledynamo.provider");
                             ContentValues cv = new ContentValues();
                             cv.put(KEY_FIELD, msgs[0]);
@@ -570,12 +514,7 @@ public class SimpleDynamoProvider extends ContentProvider {
                         } else if (msgs.length > 2 && msgs[2].equals("IR2")) {
 
                             Log.i("Insertion", "Insertion of" + "---" + msgs[0] + "--on" + myPortNumber);
-                            //ContentResolver cr = getContext().getContentResolver();
-                            /*Uri uri = buildUri("content", "edu.buffalo.cse.cse486586.simpledynamo.provider");
-                            ContentValues cv = new ContentValues();
-                            cv.put(KEY_FIELD, msgs[0]);
-                            cv.put(VALUE_FIELD, msgs[1]);
-                            cv.put(TEST_FIELD, "RD");*/
+            
                             FileOutputStream outputStream;
                             try {
                                 outputStream = getContext().openFileOutput(msgs[0], Context.MODE_PRIVATE);
@@ -584,7 +523,7 @@ public class SimpleDynamoProvider extends ContentProvider {
                             } catch (Exception e) {
                                 Log.e(TAG, "File write failed" + e);
                             }
-                            //insert(uri, cv);
+                       
                             Log.i("After insert", "insertIR2");
                             OutputStream outToClient = server.getOutputStream();
                             DataOutputStream out = new DataOutputStream(outToClient);
@@ -595,7 +534,7 @@ public class SimpleDynamoProvider extends ContentProvider {
                         } else if (msgs.length > 2 && msgs[2].equals("FS1")) {
 
                             Log.i("R1-OwnClient-Server", "R1-OwnClient-Server" + "---" + msgs[0]);
-                            //ContentResolver cr = getContext().getContentResolver();
+                         
                             Uri uri = buildUri("content", "edu.buffalo.cse.cse486586.simpledynamo.provider");
                             ContentValues cv = new ContentValues();
                             cv.put(KEY_FIELD, msgs[0]);
@@ -610,23 +549,23 @@ public class SimpleDynamoProvider extends ContentProvider {
                             out.writeBytes(dataToSend);
                             out.flush();
                             publishProgress(msgs[0], msgs[1], msgs[2], msgs[3]);
-                            Log.i("AckendserverFS1", "ackend server");
+                      
                         } else if (msgs.length > 2 && msgs[2].equals("FS2")) {
                             Log.i("R2-OwnClient-Server", "R2-OwnClient-Server" + "--" + msgs[0]);
-                            //ContentResolver cr = getContext().getContentResolver();
+                   
                             Uri uri = buildUri("content", "edu.buffalo.cse.cse486586.simpledynamo.provider");
                             ContentValues cv = new ContentValues();
                             cv.put(KEY_FIELD, msgs[0]);
                             cv.put(VALUE_FIELD, msgs[1]);
                             cv.put(TEST_FIELD, "RD");
                             insert(uri, cv);
-                            Log.i("InsertFS2", "FS2Server");
+                        
                             OutputStream outToClient = server.getOutputStream();
                             DataOutputStream out = new DataOutputStream(outToClient);
                             String dataToSend = ACK + "\n";
                             out.writeBytes(dataToSend);
                             out.flush();
-                            Log.i("ackend", "After ackend");
+                           
                         } else if (msgs.length > 1 && msgs[1].equals("QR")) {
 
                             Log.i("In QR", "QR");
@@ -641,15 +580,15 @@ public class SimpleDynamoProvider extends ContentProvider {
                             out.writeBytes(dataToSend);
                             out.flush();
                         } else if (msgs[0].equals("SQ")) {
-                            //Log.i("In SQServer", msgs[0]);
+                          
                             Uri uri = buildUri("content", "edu.buffalo.cse.cse486586.simpledynamo.provider");
                             Cursor rc = query(uri, null, "@", null, null);
                             StringBuffer sb = new StringBuffer();
-                            //Log.i("Rc count", "SQ" + rc.getCount());
+                        
                             String resultStar = "";
                             if (rc.getCount() > 0) {
                                 while (rc.moveToNext()) {
-                                    //Log.i("In Cursor iterator", rc.toString());
+                                  
                                     int keyIndex = rc.getColumnIndex(KEY_FIELD);
                                     int valueIndex = rc.getColumnIndex(VALUE_FIELD);
                                     String returnKey = rc.getString(keyIndex);
@@ -665,7 +604,7 @@ public class SimpleDynamoProvider extends ContentProvider {
                             out.writeBytes(dataToSend);
                             out.flush();
                         } else if (msgs.length > 1 && msgs[1].equals("ND")) {
-                            //isDeleteDirected =true;
+                     
                             Uri uri = buildUri("content", "edu.buffalo.cse.cse486586.simpledynamo.provider");
                             delete(uri, msgs[0] + ",R", null);
 
@@ -677,7 +616,7 @@ public class SimpleDynamoProvider extends ContentProvider {
                             publishProgress(msgs[0], msgs[1]);
 
                         } else if (msgs.length > 1 && (msgs[1].equals("ND1") || msgs[1].equals("ND2"))) {
-                            //isDeleteDirected =true;
+                      
                             Uri uri = buildUri("content", "edu.buffalo.cse.cse486586.simpledynamo.provider");
                             delete(uri, msgs[0] + ",R", null);
                             OutputStream outToClient = server.getOutputStream();
@@ -687,7 +626,7 @@ public class SimpleDynamoProvider extends ContentProvider {
                             out.flush();
 
                         } else if (msgs.length > 1 && msgs[1].equals("SD")) {
-                            //isDeleteDirected =true;
+                  
                             Uri uri = buildUri("content", "edu.buffalo.cse.cse486586.simpledynamo.provider");
                             delete(uri, msgs[0] + "R", null);
                             OutputStream outToClient = server.getOutputStream();
@@ -1275,169 +1214,6 @@ public class SimpleDynamoProvider extends ContentProvider {
                         return key;
                 }
                 return firstkey;
-                /*try {
-                    Log.i("QR to last replica", msgs[2]);
-                    Socket socket = new Socket(InetAddress.getByAddress(new byte[]{10, 0, 2, 2}),
-                            Integer.parseInt(msgs[2]));
-                    OutputStream inputToServer = socket.getOutputStream();
-                    DataOutputStream out = new DataOutputStream(inputToServer);
-                    String msgToSend = msgs[0] + "," + msgs[1] + "\n";
-                    out.writeBytes(msgToSend);
-                    out.flush();
-                    InputStream inFromServer = socket.getInputStream();
-                    BufferedReader in = new BufferedReader(new InputStreamReader(inFromServer));
-                    String msgFromClient = in.readLine();
-                    if (msgFromClient.length() > 0) {
-                        socket.close();
-                        return msgFromClient;
-                    }*/ /*else if (msgFromClient.length() == 0) {
-                        Log.i("Msglength=0", "msg length equal to 0");
-                        String porthash = "";
-                        try {
-                            int value = Integer.parseInt(msgs[2]) / 2;
-                            porthash = genHash(String.valueOf(value));
-                            Log.i("Porthash", porthash);
-                        } catch (NoSuchAlgorithmException a) {
-                            //Log.i("HashonPort",msgs[3]);
-                        }
-
-                        porthashes = new ArrayList<String>();
-                        portHashmap = new HashMap<String, String>();
-
-                        Log.i("FindHashes size", porthashes.size() + "");
-
-                        for (int i = 0; i < portArr.length; i++) {
-
-                            String port = portArr[i];
-                            try {
-                                int value = Integer.parseInt(port);
-                                value = value / 2;
-                                String portHash = genHash(String.valueOf(value));
-                                porthashes.add(portHash);
-                                portHashmap.put(portHash, port);
-                                if (port.equals(myPortNumber))
-                                    myHash = portHash;
-                            } catch (NoSuchAlgorithmException a) {
-                                Log.i(TAG, "No Hash");
-                            }
-                        }
-                        Collections.sort(porthashes);
-                        String pp = "";
-                        for (int i = 0; i < porthashes.size(); i++) {
-                            if (porthashes.get(i).equals(porthash)) {
-
-                                if (i == porthashes.size() - 1) {
-                                    pp = porthashes.get(0);
-                                } else {
-                                    pp = porthashes.get(i + 1);
-                                }
-                                Log.i("PP", pp + "" + portHashmap.get(pp));
-                                break;
-                            }
-                        }
-
-                        try {
-                            Log.i("QR- LBR-Concurrent", portHashmap.get(pp));
-                            Socket socket2 = new Socket(InetAddress.getByAddress(new byte[]{10, 0, 2, 2}),
-                                    Integer.parseInt(portHashmap.get(pp)));
-                            OutputStream inputToServer2 = socket2.getOutputStream();
-                            DataOutputStream out2 = new DataOutputStream(inputToServer2);
-                            String msgToSend2 = msgs[0] + "," + msgs[1] + "\n";
-                            out2.writeBytes(msgToSend2);
-                            out2.flush();
-                            Log.i("Betweenios", "QR-LBR");
-                            InputStream inFromServer2 = socket2.getInputStream();
-                            BufferedReader in2 = new BufferedReader(new InputStreamReader(inFromServer2));
-                            String msgFromClient2 = in2.readLine();
-                            socket2.close();
-                            Log.i("Endreturn", "QR_LBR");
-                            return msgFromClient2;
-
-                        } catch (UnknownHostException e) {
-                            Log.e(TAG, "ClientTask UnknownHostException");
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            Log.e(TAG, "ClientTask socket IOException");
-                        }
-
-                    }*/
-
-               /* } catch (UnknownHostException e) {
-                    Log.e(TAG, "ClientTask UnknownHostException");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Log.e(TAG, "ClientTask socket IOException");
-                } catch (NullPointerException n) {*/
-
-                 /*   String porthash = "";
-                    try {
-                        int value = Integer.parseInt(msgs[2]) / 2;
-                        porthash = genHash(String.valueOf(value));
-                        Log.i("Porthash", porthash);
-                    } catch (NoSuchAlgorithmException a) {
-                        //Log.i("HashonPort",msgs[3]);
-                    }
-
-                    porthashes = new ArrayList<String>();
-                    portHashmap = new HashMap<String, String>();
-
-                    Log.i("FindHashes size", porthashes.size() + "");
-
-                    for (int i = 0; i < portArr.length; i++) {
-
-                        String port = portArr[i];
-                        try {
-                            int value = Integer.parseInt(port);
-                            value = value / 2;
-                            String portHash = genHash(String.valueOf(value));
-                            porthashes.add(portHash);
-                            portHashmap.put(portHash, port);
-                            if (port.equals(myPortNumber))
-                                myHash = portHash;
-                        } catch (NoSuchAlgorithmException a) {
-                            Log.i(TAG, "No Hash");
-                        }
-                    }
-                    Collections.sort(porthashes);
-
-                    String pp = "";
-                    for (int i = 0; i < porthashes.size(); i++) {
-                        if (porthashes.get(i).equals(porthash)) {
-
-                            if (i == porthashes.size() - 1) {
-                                pp = porthashes.get(0);
-                            } else {
-                                pp = porthashes.get(i + 1);
-                            }
-                            Log.i("PP", pp + "" + portHashmap.get(pp));
-                            break;
-                        }
-                    }
-
-                    try {
-                        Log.i("QR- LB replica", portHashmap.get(pp));
-                        Socket socket = new Socket(InetAddress.getByAddress(new byte[]{10, 0, 2, 2}),
-                                Integer.parseInt(portHashmap.get(pp)));
-                        OutputStream inputToServer = socket.getOutputStream();
-                        DataOutputStream out = new DataOutputStream(inputToServer);
-                        String msgToSend = msgs[0] + "," + msgs[1] + "\n";
-                        out.writeBytes(msgToSend);
-                        out.flush();
-                        Log.i("Betweenios", "QR-LB_Nullpointer");
-                        InputStream inFromServer = socket.getInputStream();
-                        BufferedReader in = new BufferedReader(new InputStreamReader(inFromServer));
-                        String msgFromClient = in.readLine();
-                        socket.close();
-                        Log.i("Endreturn", "QR-LB Nullpointer");
-                        return msgFromClient;
-
-                    } catch (UnknownHostException e) {
-                        Log.e(TAG, "ClientTask UnknownHostException");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Log.e(TAG, "ClientTask socket IOException");
-                    }*/
-                //}
             } else if (msgs.length > 1 && msgs[1].equals("SQ")) {
                 try {
                     //Log.i("SQ on", msgs[0]);
